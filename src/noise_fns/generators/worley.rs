@@ -11,7 +11,7 @@ use alloc::rc::Rc;
 pub struct Worley {
     /// Specifies the distance function to use when calculating the boundaries of
     /// the cell.
-    pub distance_function: Rc<DistanceFunction>,
+    //pub distance_function: Rc<DistanceFunction>,
 
     /// Signifies whether the distance from the borders of the cell should be returned, or the
     /// value for the cell.
@@ -34,20 +34,8 @@ impl Worley {
         Self {
             perm_table: PermutationTable::new(seed),
             seed,
-            distance_function: Rc::new(distance_functions::euclidean),
             return_type: ReturnType::Value,
             frequency: Self::DEFAULT_FREQUENCY,
-        }
-    }
-
-    /// Sets the distance function used by the Worley cells.
-    pub fn set_distance_function<F>(self, function: F) -> Self
-    where
-        F: Fn(&[f64], &[f64]) -> f64 + 'static,
-    {
-        Self {
-            distance_function: Rc::new(function),
-            ..self
         }
     }
 
@@ -97,7 +85,7 @@ impl NoiseFn<f64, 2> for Worley {
     fn get(&self, point: [f64; 2]) -> f64 {
         worley_2d(
             &self.perm_table,
-            &*self.distance_function,
+            distance_functions::euclidean,
             self.return_type,
             Vector2::from(point) * self.frequency,
         )
@@ -108,7 +96,7 @@ impl NoiseFn<f64, 3> for Worley {
     fn get(&self, point: [f64; 3]) -> f64 {
         worley_3d(
             &self.perm_table,
-            &*self.distance_function,
+            distance_functions::euclidean,
             self.return_type,
             Vector3::from(point) * self.frequency,
         )
@@ -120,7 +108,7 @@ impl NoiseFn<f64, 4> for Worley {
     fn get(&self, point: [f64; 4]) -> f64 {
         worley_4d(
             &self.perm_table,
-            &*self.distance_function,
+            distance_functions::euclidean,
             self.return_type,
             Vector4::from(point) * self.frequency,
         )
